@@ -16,7 +16,7 @@ Usage:
 
 Texture packs created with qutex can be loaded using `qutex::reader`.
 
-```
+```cpp
 qutex::reader reader { "/path/to/texture-pack/" };
 reader.read_all_sprites(
     [&](std::filesystem::path path, int width, int height) {
