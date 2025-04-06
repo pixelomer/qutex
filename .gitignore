@@ -1,0 +1,16 @@
+*
+!loader/
+!loader/CMakeLists.txt
+!loader/*.cc
+!packer/
+!packer/CMakeLists.txt
+!packer/*.cc
+!packer/*.h
+!packer/*.hpp
+!qutex/
+!qutex/*.hpp
+!.gitignore
+!.gitattributes
+!CMakeLists.txt
+!main.cc
+!README.md
