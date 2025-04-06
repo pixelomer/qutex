@@ -12,6 +12,8 @@ public:
     canvas(canvas const&);
     bool insert_sprite(sprite_info const& sprite, int &x, int &y);
     bool write_png(std::filesystem::path path, int size_multiplier = 0);
+    bool write_png(std::filesystem::path path, int size_multiplier,
+        int &wrote_width, int &wrote_height);
     void clear();
 private:
     int m_width;

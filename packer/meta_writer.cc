@@ -2,14 +2,6 @@
 
 using namespace qutex;
 
-meta_writer::meta_writer(std::filesystem::path path) {
-    m_stream.open(path, std::ios::binary);
-    if (m_stream.fail()) {
-        throw std::runtime_error("failed to open meta writer at " + path.string());
-    }
-    write_header();
-}
-
 void meta_writer::write_header() {
     static const char header[] = { 'Q', 'U', 'T', 'E', 'X', 0, 0, 0 };
     m_stream.write(header, sizeof(header));
@@ -32,11 +24,33 @@ void meta_writer::add_sprite(int x, int y, sprite_info const& info) {
         info.height << info.offset_x << x << y << info.offset_y << info.name;
 }
 
-void meta_writer::close() {
+void meta_writer::finalize(int width, int height) {
+    m_stream.seekp(8);
+    *this << width << height;
     m_stream.close();
 }
 
 meta_writer::meta_writer() {}
+
+void meta_writer::open(std::filesystem::path path) {
+    if (is_open()) {
+        m_stream.close();
+        std::runtime_error("open() called before meta_writer::finalize()");
+    }
+    m_stream.open(path, std::ios::binary | std::ios::out | std::ios::trunc);
+    if (m_stream.fail()) {
+        throw std::runtime_error("failed to open meta writer at " + path.string());
+    }
+    write_header();
+    *this << 0 << 0;
+}
+
+meta_writer::~meta_writer() {
+    if (is_open()) {
+        m_stream.close();
+        std::runtime_error("destructor called before meta_writer::finalize()");
+    }
+}
 
 bool meta_writer::is_open() {
     return m_stream.is_open();

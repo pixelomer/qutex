@@ -46,7 +46,9 @@ bool canvas::insert_sprite(sprite_info const& sprite, int &out_x, int &out_y) {
     return true;
 }
 
-bool canvas::write_png(std::filesystem::path path, int size_multiplier) {
+bool canvas::write_png(std::filesystem::path path, int size_multiplier,
+    int &wrote_width, int &wrote_height)
+{
     int width, height;
     if (size_multiplier <= 0) {
         height = m_height;
@@ -60,7 +62,14 @@ bool canvas::write_png(std::filesystem::path path, int size_multiplier) {
     }
     int ok = stbi_write_png(path.c_str(), width, height,
         4, &m_data[0], m_width * 4);
+    wrote_width = width;
+    wrote_height = height;
     return ok == 1;
+}
+
+bool canvas::write_png(std::filesystem::path path, int size_multiplier) {
+    int wrote_width, wrote_height;
+    return write_png(path, size_multiplier, wrote_width, wrote_height);
 }
 
 void canvas::clear() {

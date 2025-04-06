@@ -69,11 +69,12 @@ void packer::pack(int width, int height, std::filesystem::path output_directory,
     int x, y, tex_num = 1;
     auto flush_textures = [&](){
         auto name = png_name(tex_num++);
+        int wrote_width, wrote_height;
         canvas.write_png(output_directory / name,
-            size_multiplier);
+            size_multiplier, wrote_width, wrote_height);
         texture_list << name << std::endl;
         canvas.clear();
-        meta.close();
+        meta.finalize(wrote_width, wrote_height);
     };
     for (auto &sprite : m_sprites) {
         bool did_insert = canvas.insert_sprite(sprite, x, y);
@@ -85,7 +86,7 @@ void packer::pack(int width, int height, std::filesystem::path output_directory,
             }
         }
         if (!meta.is_open()) {
-            meta = meta_writer { output_directory / (png_name(tex_num) + ".meta") };
+            meta.open(output_directory / (png_name(tex_num) + ".meta"));
         }
         meta.add_sprite(x, y, sprite);
     }

@@ -10,10 +10,11 @@ namespace qutex {
 class meta_writer {
 public:
     meta_writer();
-    meta_writer(std::filesystem::path path);
+    void open(std::filesystem::path path);
     void add_sprite(int x, int y, sprite_info const& info);
     bool is_open();
-    void close();
+    void finalize(int width, int height);
+    ~meta_writer();
 private:
     meta_writer &operator<<(uint16_t x);
     meta_writer &operator<<(std::string const& str);

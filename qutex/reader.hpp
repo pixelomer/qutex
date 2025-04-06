@@ -9,7 +9,8 @@ namespace qutex {
 class reader {
 public:
     reader(std::filesystem::path path);
-    void read_all_sprites(std::function<void(std::filesystem::path path)> texture_cb,
+    void read_all_sprites(std::function<void(std::filesystem::path path,
+        int width, int height)> texture_cb,
         std::function<void(int x, int y, sprite_info const& sprite)> sprite_cb);
 private:
     std::filesystem::path m_root;

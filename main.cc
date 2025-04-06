@@ -58,7 +58,7 @@ public:
             SDL_Texture *current_texture;
             std::filesystem::path current_path;
             reader.read_all_sprites(
-                [&](std::filesystem::path path) {
+                [&](std::filesystem::path path, int, int) {
                     if (m_textures.count(path) == 0) {
                         current_path = path;
                         current_texture = m_textures[path] =
@@ -164,7 +164,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
     else if (argc == 3 && strcmp(argv[1], "read") == 0) {
         qutex::reader reader { argv[1] };
         reader.read_all_sprites(
-            [](std::filesystem::path path) {
+            [](std::filesystem::path path, int, int) {
                 std::cout << path << std::endl;
             },
             [](int x, int y, qutex::sprite_info const& info) {
