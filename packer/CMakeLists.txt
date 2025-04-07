@@ -14,6 +14,7 @@ add_library(
     sprite_info.cc
     stb_image_write.cc
     stb_image.cc
+    stb_rect_pack.cc
 )
 
 target_compile_options(qutex-packer PRIVATE

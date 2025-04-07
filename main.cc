@@ -107,23 +107,29 @@ public:
         SDL_SetRenderDrawColorFloat(m_renderer, 1, 1, 1, 1);
         SDL_RenderClear(m_renderer);
         auto &sprite = m_sprites[m_sprite_idx];
+
+        //FIXME: SDL renders 1 column and 1 line before the sprite unless +1/-1 is added
+        //       Is this a precision issue or a bug in qutex?
         SDL_FRect dest;
-        dest.h = sprite.info.height;
-        dest.w = sprite.info.width;
+        dest.h = sprite.info.height - 1;
+        dest.w = sprite.info.width - 1;
         dest.x = m_window_width / 2.0 - dest.w / 2.0;
         dest.y = m_window_height / 2.0 - dest.h / 2.0;
         SDL_FRect src;
-        src.h = sprite.info.height;
-        src.w = sprite.info.width;
-        src.x = sprite.texture_x;
-        src.y = sprite.texture_y;
+        src.h = sprite.info.height - 1;
+        src.w = sprite.info.width - 1;
+        src.x = sprite.texture_x + 1;
+        src.y = sprite.texture_y + 1;
+
         SDL_RenderTexture(m_renderer, sprite.texture,
             &src, &dest);
         SDL_RenderPresent(m_renderer);
         return SDL_APP_CONTINUE;
     }
     void update_title() {
-        auto title = m_sprites[m_sprite_idx].info.name + " (" +
+        auto title = m_sprites[m_sprite_idx].info.name + " [" +
+            std::to_string(m_sprites[m_sprite_idx].info.width) + "x" +
+            std::to_string(m_sprites[m_sprite_idx].info.height) + "] (" +
             std::to_string(m_sprite_idx + 1) + " / " +
             std::to_string(m_sprites.size()) + ")";
         SDL_SetWindowTitle(m_window, title.c_str());
@@ -176,7 +182,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
             [](qutex::sprite_info const& info){
                 std::cout << info << std::endl;
             });
-        packer.pack(1024, 1024, argv[3], 4);
+        packer.pack(1024, 1024, argv[3], 4, true);
         return SDL_APP_SUCCESS;
     }
     else if (argc == 3 && strcmp(argv[1], "read") == 0) {

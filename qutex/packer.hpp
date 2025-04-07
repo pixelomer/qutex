@@ -34,7 +34,7 @@ public:
         std::string extension = ".png",
         std::function<void(sprite_info const&)> cb = nullptr);
     void pack(int width, int height, std::filesystem::path output_directory,
-        int size_multiplier = 0);
+        int size_multiplier = 0, bool verbose = false);
 private:
     bool m_trim_transparency;
     std::set<sprite_info> m_sprites;
